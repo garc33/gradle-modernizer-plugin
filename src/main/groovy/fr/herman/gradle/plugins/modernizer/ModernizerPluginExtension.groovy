@@ -1,8 +1,9 @@
 package fr.herman.gradle.plugins.modernizer
 
 class ModernizerPluginExtension {
-    def String exclusionsFile
-    def String violationsFile
-    def boolean includeTestClasses = false
-    def boolean failOnViolations = false
+    String exclusionsFile
+    String violationsFile
+    boolean includeTestClasses = false
+    boolean failOnViolations = false
+    boolean excludeNotInSources = false
 }

@@ -51,7 +51,7 @@ class ModernizerPlugin implements Plugin<Project> {
                 }
             }
             log.info("run modernizer on java ${project.targetCompatibility.toString()}")
-            def modernizer = new Modernizer(project.targetCompatibility.toString(), violations, exclusions);
+            def modernizer = new Modernizer(project.targetCompatibility.toString(), violations, exclusions)
 
             try {
                 Long count = recurseFiles(project,modernizer, project.sourceSets.main.output.classesDir)
@@ -86,32 +86,32 @@ class ModernizerPlugin implements Plugin<Project> {
     def recurseFiles(Project project, Modernizer modernizer, File file) throws IOException {
         long count = 0;
         if (!file.exists()) {
-            return count;
+            return count
         }
         if (file.isDirectory()) {
-            String[] children = file.list();
+            def children = file.list()
             if (children != null) {
                 for (String child : children) {
                     count += recurseFiles(project,modernizer, new File(file, child));
                 }
             }
         } else if (file.getPath().endsWith(".class")) {
-            InputStream is = new FileInputStream(file);
+            def is = new FileInputStream(file)
             try {
                 modernizer.check(is).each {
-                    String name = sourceFileName(project.sourceSets.main.java.getSrcDirs(),project.sourceSets.main.output.classesDir, file.path)
-                    if(project.modernizer.includeTestClasses&&name.endsWith('.class')){
+                    String name = sourceFileName(project.sourceSets.main.java.getSrcDirs(), project.sourceSets.main.output.classesDir, file.path)
+                    if(project.modernizer.includeTestClasses && name.endsWith('.class'))
                         name = sourceFileName(project.sourceSets.test.java.getSrcDirs(),project.sourceSets.test.output.classesDir, name)
+                    if(!project.modernizer.excludeNotInSources || (it.getLineNumber()!=-1&&name.endsWith('.java'))){
+                        log.warning(name + ':' + it.getLineNumber() + ': ' + it.getViolation().getComment())
+                        ++count
                     }
-
-                    log.warning(name + ':' +it.getLineNumber() + ': ' +it.getViolation().getComment());
-                    ++count;
                 }
             } finally {
                 is?.close()
             }
         }
-        return count;
+        return count
     }
 
     def sourceFileName(Collection<File> sourcesDirs,File outputDir,String name){
