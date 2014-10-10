@@ -71,7 +71,9 @@ class ModernizerPlugin implements Plugin<Project> {
         }
 
         modernizerTask.group = 'Verification'
+        modernizerTask.description = 'Detects use of legacy APIs which modern Java versions supersede'
         modernizerTask.dependsOn('classes')
+        project.tasks['check'].dependsOn('modernizer')
         project.configure(project) {
             afterEvaluate {
                 if(project.modernizer.includeTestClasses)
