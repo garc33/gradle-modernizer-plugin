@@ -69,7 +69,8 @@ class ModernizerPlugin implements Plugin<Project> {
                 throw new Exception("Error reading Java classes", ioe)
             }
         }
-        
+
+        modernizerTask.group = 'Verification'
         modernizerTask.dependsOn('classes')
         project.configure(project) {
             afterEvaluate {
