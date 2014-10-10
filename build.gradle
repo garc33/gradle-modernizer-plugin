@@ -1,0 +1,27 @@
+apply plugin: 'groovy'
+apply plugin: 'eclipse'
+apply plugin: 'maven'
+
+version = '1.0'
+group = 'fr.herman.gradle.plugins'
+repositories { mavenCentral() }
+
+configurations {
+    packaged {
+        description = 'packaged dependencies'
+    }
+    compile {
+        extendsFrom packaged
+    }
+}
+
+jar {
+    from { configurations.packaged.files.findAll().collect { zipTree(it) } }
+    duplicatesStrategy =  DuplicatesStrategy.EXCLUDE
+}
+
+dependencies {
+    packaged 'org.gaul:modernizer-maven-plugin:1.1.0'
+    compile gradleApi()
+    compile localGroovy()
+}
