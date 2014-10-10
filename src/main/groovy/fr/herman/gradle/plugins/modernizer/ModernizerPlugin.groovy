@@ -12,7 +12,7 @@ class ModernizerPlugin implements Plugin<Project> {
         project.apply plugin: 'java'
         project.extensions.create("modernizer", ModernizerPluginExtension)
 
-        project.task('modernizer')<<{
+        def modernizerTask = project.task('modernizer')<<{
             Map<String, Violation> violations
             InputStream is
             try {
@@ -67,6 +67,14 @@ class ModernizerPlugin implements Plugin<Project> {
                 }
             } catch (IOException ioe) {
                 throw new Exception("Error reading Java classes", ioe)
+            }
+        }
+        
+        modernizerTask.dependsOn('classes')
+        project.configure(project) {
+            afterEvaluate {
+                if(project.modernizer.includeTestClasses)
+                    modernizerTask.dependsOn('testClasses')
             }
         }
     }
