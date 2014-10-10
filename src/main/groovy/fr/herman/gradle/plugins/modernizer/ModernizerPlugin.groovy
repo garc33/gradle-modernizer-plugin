@@ -99,22 +99,12 @@ class ModernizerPlugin implements Plugin<Project> {
             InputStream is = new FileInputStream(file);
             try {
                 modernizer.check(is).each {
-                    String name = file.getPath();
-                    //                    if (name.startsWith(project.sourceSets.main.output.classesDir.getPath())) {
-                    //                        name = project.sourceSets.main.java.getPath() + name.substring(
-                    //                                project.sourceSets.main.output.classesDir.getPath().length());
-                    //                        name = name.substring(0,
-                    //                                name.length() - ".class".length()) + ".java";
-                    //                    } else if (name.startsWith(project.sourceSets.test.output.classesDir.getPath())) {
-                    //                        name = testSourceDirectory.getPath() + name.substring(
-                    //                                project.sourceSets.test.output.classesDir.getPath().length());
-                    //                        name = name.substring(0,
-                    //                                name.length() - ".class".length()) + ".java";
-                    //                    }
+                    String name = sourceFileName(project.sourceSets.main.java.getSrcDirs(),project.sourceSets.main.output.classesDir, file.path)
+                    if(project.modernizer.includeTestClasses&&name.endsWith('.class')){
+                        name = sourceFileName(project.sourceSets.test.java.getSrcDirs(),project.sourceSets.test.output.classesDir, name)
+                    }
 
-                    log.warning(name + ":" +
-                            it.getLineNumber() + ": " +
-                            it.getViolation().getComment());
+                    log.warning(name + ':' +it.getLineNumber() + ': ' +it.getViolation().getComment());
                     ++count;
                 }
             } finally {
@@ -122,5 +112,17 @@ class ModernizerPlugin implements Plugin<Project> {
             }
         }
         return count;
+    }
+
+    def sourceFileName(Collection<File> sourcesDirs,File outputDir,String name){
+        if(name.startsWith(outputDir.path)){
+            for(File sourceDir : sourcesDirs){
+                def newname = sourceDir.path + name.substring(outputDir.path.length())
+                newname = newname.replace('.class', '.java')
+                if(new File(newname).file)
+                    return newname
+            }
+        }
+        return name
     }
 }
