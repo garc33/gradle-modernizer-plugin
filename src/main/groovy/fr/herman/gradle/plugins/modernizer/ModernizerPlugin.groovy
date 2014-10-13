@@ -98,10 +98,10 @@ class ModernizerPlugin implements Plugin<Project> {
         } else if (file.getPath().endsWith(".class")) {
             def is = new FileInputStream(file)
             try {
+                String name = sourceFileName(project.sourceSets.main.java.getSrcDirs(), project.sourceSets.main.output.classesDir, file.path)
+                if(project.modernizer.includeTestClasses && name.endsWith('.class'))
+                    name = sourceFileName(project.sourceSets.test.java.getSrcDirs(),project.sourceSets.test.output.classesDir, name)
                 modernizer.check(is).each {
-                    String name = sourceFileName(project.sourceSets.main.java.getSrcDirs(), project.sourceSets.main.output.classesDir, file.path)
-                    if(project.modernizer.includeTestClasses && name.endsWith('.class'))
-                        name = sourceFileName(project.sourceSets.test.java.getSrcDirs(),project.sourceSets.test.output.classesDir, name)
                     if(!project.modernizer.excludeNotInSources || (it.getLineNumber()!=-1&&name.endsWith('.java'))){
                         log.warning(name + ':' + it.getLineNumber() + ': ' + it.getViolation().getComment())
                         ++count
