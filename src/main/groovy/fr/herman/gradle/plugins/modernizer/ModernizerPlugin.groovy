@@ -59,7 +59,7 @@ class ModernizerPlugin implements Plugin<Project> {
                     count += recurseFiles(project,modernizer, project.sourceSets.test.output.classesDir)
                 }
                 if(0==count){
-                    println 'No violation found'
+                    log.info 'No violation found'
                 }else if (project.modernizer.failOnViolations) {
                     throw new Exception("Found ${count} violations")
                 } else {
@@ -89,11 +89,8 @@ class ModernizerPlugin implements Plugin<Project> {
             return count
         }
         if (file.isDirectory()) {
-            def children = file.list()
-            if (children != null) {
-                for (String child : children) {
-                    count += recurseFiles(project,modernizer, new File(file, child));
-                }
+            file.list()?.each{
+                count += recurseFiles(project,modernizer, new File(file, it));
             }
         } else if (file.getPath().endsWith(".class")) {
             def is = new FileInputStream(file)
@@ -102,7 +99,7 @@ class ModernizerPlugin implements Plugin<Project> {
                 if(project.modernizer.includeTestClasses && name.endsWith('.class'))
                     name = sourceFileName(project.sourceSets.test.java.getSrcDirs(),project.sourceSets.test.output.classesDir, name)
                 modernizer.check(is).each {
-                    if(!project.modernizer.excludeNotInSources || (it.getLineNumber()!=-1&&name.endsWith('.java'))){
+                    if(!project.modernizer.excludeNotInSources || (it.getLineNumber() != -1 && name.endsWith('.java'))){
                         log.warning(name + ':' + it.getLineNumber() + ': ' + it.getViolation().getComment())
                         ++count
                     }
