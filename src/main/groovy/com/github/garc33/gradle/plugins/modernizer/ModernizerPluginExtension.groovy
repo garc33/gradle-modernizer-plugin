@@ -1,4 +1,4 @@
-package fr.herman.gradle.plugins.modernizer
+package com.github.garc33.gradle.plugins.modernizer
 
 class ModernizerPluginExtension {
     String exclusionsFile

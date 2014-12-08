@@ -1,4 +1,4 @@
-package fr.herman.gradle.plugins.modernizer
+package com.github.garc33.gradle.plugins.modernizer
 
 import groovy.util.logging.Log
 import org.gaul.modernizer_maven_plugin.Modernizer

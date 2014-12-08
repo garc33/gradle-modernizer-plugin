@@ -3,7 +3,7 @@ apply plugin: 'eclipse'
 apply plugin: 'maven'
 
 version = '1.0'
-group = 'fr.herman.gradle.plugins'
+group = 'com.github.garc33.gradle.plugins'
 repositories { mavenCentral() }
 
 configurations {
