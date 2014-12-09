@@ -8,6 +8,7 @@ How to use it ?
 Add to your gradle script
 ```groovy
 buildscript {
+    repositories { mavenCentral() }
     dependencies { classpath "com.github.garc33.gradle.plugins:gradle-modernizer-plugin:1.0" }
 }
 apply plugin: 'modernizer'
