@@ -24,4 +24,4 @@ Configuration
 |includeTestClasses         |Check tests classes                                    | false             |
 |failOnViolations           |Fail build when violation occurs                       | false             |
 |excludeNotInSources        |Exclude classes from packaged dependency               | false             |
-|exclusionsFile             |Path of a file with path of classes to exclude         |                   |
+
