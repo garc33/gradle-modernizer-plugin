@@ -1,20 +1,8 @@
+apply from: 'https://gist.githubusercontent.com/garc33/31f1c635f0054aef3c77/raw/86fa8602051eabbde8befac1ed23d0dfa73926f5/starter.gradle'
 apply plugin: 'groovy'
-apply plugin: 'eclipse'
-apply plugin: 'maven'
-apply plugin: 'signing'
 
-version = '1.0'
+version = '1.1-SNAPSHOT'
 group = 'com.github.garc33.gradle.plugins'
-repositories { mavenCentral() }
-
-configurations {
-    packaged {
-        description = 'packaged dependencies'
-    }
-    compile {
-        extendsFrom packaged
-    }
-}
 
 dependencies {
     packaged 'org.gaul:modernizer-maven-plugin:1.1.0'
@@ -22,70 +10,17 @@ dependencies {
     compile localGroovy()
 }
 
-jar {
-    from { configurations.packaged.files.findAll().collect { zipTree(it) } }
-    duplicatesStrategy =  DuplicatesStrategy.EXCLUDE
-}
+modifyPom{ pom ->
+    pom.project {
+        name 'Gradle Modernizer Plugin'
+        packaging 'jar'
+        description 'Gradle wrapper for https://github.com/andrewgaul/modernizer-maven-plugin'
+        url 'https://github.com/garc33/gradle-modernizer-plugin'
 
-task javadocJar(type: Jar) {
-    classifier = 'javadoc'
-    from javadoc
-}
-
-task sourcesJar(type: Jar) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
-}
-
-artifacts {
-    archives javadocJar, sourcesJar
-}
-
-
-signing {
-    sign configurations.archives
-}
-
-uploadArchives {
-    repositories {
-      mavenDeployer {
-        beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-
-        repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-          authentication(userName: ossrhUsername, password: ossrhPassword)
-        }
-
-        snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
-          authentication(userName: ossrhUsername, password: ossrhPassword)
-        }
-
-        pom.project {
-          name 'Gradle Modernizer Plugin'
-          packaging 'jar'
-          description 'Gradle wrapper for https://github.com/andrewgaul/modernizer-maven-plugin'
-          url 'https://github.com/garc33/gradle-modernizer-plugin'
-
-          scm {
+        scm {
             connection 'https://github.com/garc33/gradle-modernizer-plugin.git'
             developerConnection 'https://github.com/garc33/gradle-modernizer-plugin.git'
             url 'https://github.com/garc33/gradle-modernizer-plugin.git'
-          }
-
-          licenses {
-            license {
-              name 'The Apache License, Version 2.0'
-              url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-            }
-          }
-
-          developers {
-            developer {
-              id 'garc33'
-              name 'Marc Herman'
-              email 'garc33@gmail.com'
-            }
-          }
         }
-      }
     }
-  }
+}
